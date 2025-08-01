@@ -68,7 +68,7 @@ const swaggerDefinition = {
     schemas: {
       User: {
         type: 'object',
-        required: ['firstName', 'lastName', 'email', 'password', 'employeeId'],
+        required: ['firstName', 'lastName', 'email', 'password', 'phone', 'employeeId', 'department'],
         properties: {
           _id: {
             type: 'string',
@@ -112,14 +112,14 @@ const swaggerDefinition = {
             type: 'string',
             description: 'Department name',
             example: 'Engineering',
-            enum: ['Engineering', 'HR', 'Finance', 'Marketing', 'Operations', 'Sales', 'Other']
+            enum: ['Engineering', 'Marketing', 'Sales', 'HR', 'Finance', 'Operations']
           },
           role: {
             type: 'string',
             description: 'User role for access control',
-            example: 'employee',
-            enum: ['employee', 'admin'],
-            default: 'employee'
+            example: 'user',
+            enum: ['user', 'admin'],
+            default: 'user'
           },
           isActive: {
             type: 'boolean',
@@ -143,7 +143,7 @@ const swaggerDefinition = {
       },
       UserRegistration: {
         type: 'object',
-        required: ['firstName', 'lastName', 'email', 'password', 'employeeId', 'department'],
+        required: ['firstName', 'lastName', 'email', 'password', 'phone', 'employeeId', 'department'],
         properties: {
           firstName: {
             type: 'string',
@@ -181,13 +181,13 @@ const swaggerDefinition = {
           department: {
             type: 'string',
             example: 'Engineering',
-            enum: ['Engineering', 'HR', 'Finance', 'Marketing', 'Operations', 'Sales', 'Other']
+            enum: ['Engineering', 'Marketing', 'Sales', 'HR', 'Finance', 'Operations']
           },
           role: {
             type: 'string',
-            example: 'employee',
-            enum: ['employee', 'admin'],
-            default: 'employee'
+            example: 'user',
+            enum: ['user', 'admin'],
+            default: 'user'
           }
         }
       },

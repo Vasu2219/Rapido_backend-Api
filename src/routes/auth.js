@@ -9,6 +9,15 @@ const { protect } = require('../middleware/auth');
 
 const router = express.Router();
 
+// Test route to verify routing works
+router.post('/test', (req, res) => {
+  res.json({
+    success: true,
+    message: 'TEST ROUTE WORKING - NEW VERSION',
+    timestamp: new Date().toISOString()
+  });
+});
+
 /**
  * @swagger
  * /api/auth/register:
@@ -33,7 +42,7 @@ const router = express.Router();
  *                 phone: "+91-9876543210"
  *                 employeeId: "EMP001"
  *                 department: "Engineering"
- *                 role: "employee"
+ *                 role: "user"
  *             admin:
  *               summary: Admin Registration
  *               value:
@@ -141,7 +150,14 @@ router.post('/register', register);
  *       429:
  *         $ref: '#/components/responses/RateLimitError'
  */
-router.post('/login', login);
+router.post('/login', (req, res) => {
+  console.log('🔥 DIRECT LOGIN ROUTE CALLED');
+  res.json({
+    success: true,
+    message: 'DIRECT LOGIN ROUTE WORKING',
+    timestamp: new Date().toISOString()
+  });
+});
 
 /**
  * @swagger

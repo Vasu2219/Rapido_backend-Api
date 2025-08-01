@@ -44,7 +44,7 @@ const getUserRides = async (req, res, next) => {
     }
 
     const rides = await Ride.find(query)
-      .populate('userId', 'firstName lastName email employeeId')
+      .populate('userId', 'firstName lastName email phone employeeId department')
       .sort({ createdAt: -1 });
 
     res.status(200).json({
@@ -65,7 +65,7 @@ const getUserRides = async (req, res, next) => {
 const getRide = async (req, res, next) => {
   try {
     const ride = await Ride.findById(req.params.id)
-      .populate('userId', 'firstName lastName email employeeId')
+      .populate('userId', 'firstName lastName email phone employeeId department')
       .populate('approvedBy', 'firstName lastName email')
       .populate('rejectedBy', 'firstName lastName email');
 

@@ -1,3 +1,5 @@
+require('dotenv').config({ path: __dirname + '/.env' });
+
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
@@ -9,7 +11,6 @@ const { customCSS } = require('./src/config/swaggerUI');
 const connectDB = require('./src/utils/database');
 const errorHandler = require('./src/middleware/errorHandler');
 const { handleDatabaseError } = require('./src/middleware/database');
-require('dotenv').config();
 
 // Route files
 const auth = require('./src/routes/auth');
@@ -134,11 +135,11 @@ app.use(errorHandler);
 const PORT = process.env.PORT || 5000;
 
 const server = app.listen(PORT, () => {
-  console.log(`🚀 Rapido Corporate API running on port ${PORT}`);
-  console.log(`📱 Environment: ${process.env.NODE_ENV || 'development'}`);
-  console.log(`🌐 CORS enabled for: ${corsOptions.origin}`);
-  console.log(`📚 API Documentation: http://localhost:${PORT}/api-docs`);
-  console.log(`❤️  Health Check: http://localhost:${PORT}/health`);
+  console.log(`Rapido Corporate API running on port ${PORT}`);
+  console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
+  console.log(`CORS enabled for: ${corsOptions.origin}`);
+  console.log(`API Documentation: http://localhost:${PORT}/api-docs`);
+  console.log(`Health Check: http://localhost:${PORT}/health`);
   console.log(`⚡ Server started at: ${new Date().toISOString()}`);
 });
 

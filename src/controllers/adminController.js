@@ -36,7 +36,7 @@ const getAllRides = async (req, res, next) => {
     }
 
     const rides = await Ride.find(query)
-      .populate('userId', 'firstName lastName email employeeId department')
+      .populate('userId', 'firstName lastName email phone employeeId department')
       .populate('approvedBy', 'firstName lastName email')
       .populate('rejectedBy', 'firstName lastName email')
       .sort({ createdAt: -1 })
