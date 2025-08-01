@@ -1,0 +1,205 @@
+const Ride = require('../models/Ride');
+
+// @desc    Create a new ride request
+// @route   POST /api/rides
+// @access  Private
+const createRide = async (req, res, next) => {
+  try {
+    req.body.userId = req.user.id;
+    
+    // Calculate estimated fare (simple calculation)
+    req.body.estimatedFare = Math.floor(Math.random() * 300) + 100; // Random fare between 100-400
+
+    const ride = await Ride.create(req.body);
+
+    res.status(201).json({
+      success: true,
+      data: {
+        ride
+      }
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// @desc    Get all rides for logged in user
+// @route   GET /api/rides
+// @access  Private
+const getUserRides = async (req, res, next) => {
+  try {
+    const { status, startDate, endDate } = req.query;
+    
+    // Build query
+    const query = { userId: req.user.id };
+    
+    if (status) {
+      query.status = status;
+    }
+    
+    if (startDate || endDate) {
+      query.scheduleTime = {};
+      if (startDate) query.scheduleTime.$gte = new Date(startDate);
+      if (endDate) query.scheduleTime.$lte = new Date(endDate);
+    }
+
+    const rides = await Ride.find(query)
+      .populate('userId', 'firstName lastName email employeeId')
+      .sort({ createdAt: -1 });
+
+    res.status(200).json({
+      success: true,
+      count: rides.length,
+      data: {
+        rides
+      }
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// @desc    Get single ride
+// @route   GET /api/rides/:id
+// @access  Private
+const getRide = async (req, res, next) => {
+  try {
+    const ride = await Ride.findById(req.params.id)
+      .populate('userId', 'firstName lastName email employeeId')
+      .populate('approvedBy', 'firstName lastName email')
+      .populate('rejectedBy', 'firstName lastName email');
+
+    if (!ride) {
+      return res.status(404).json({
+        success: false,
+        message: 'Ride not found'
+      });
+    }
+
+    // Check if user owns the ride or is admin
+    if (ride.userId._id.toString() !== req.user.id && req.user.role !== 'admin') {
+      return res.status(403).json({
+        success: false,
+        message: 'Access denied'
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      data: {
+        ride
+      }
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// @desc    Update ride
+// @route   PUT /api/rides/:id
+// @access  Private
+const updateRide = async (req, res, next) => {
+  try {
+    let ride = await Ride.findById(req.params.id);
+
+    if (!ride) {
+      return res.status(404).json({
+        success: false,
+        message: 'Ride not found'
+      });
+    }
+
+    // Check if user owns the ride
+    if (ride.userId.toString() !== req.user.id) {
+      return res.status(403).json({
+        success: false,
+        message: 'Access denied'
+      });
+    }
+
+    // Only allow updates if ride is pending
+    if (ride.status !== 'pending') {
+      return res.status(400).json({
+        success: false,
+        message: 'Can only update pending rides'
+      });
+    }
+
+    // Update allowed fields only
+    const allowedFields = ['pickup', 'drop', 'scheduleTime'];
+    const updates = {};
+    allowedFields.forEach(field => {
+      if (req.body[field]) updates[field] = req.body[field];
+    });
+
+    ride = await Ride.findByIdAndUpdate(req.params.id, updates, {
+      new: true,
+      runValidators: true
+    });
+
+    res.status(200).json({
+      success: true,
+      data: {
+        ride
+      }
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// @desc    Cancel ride
+// @route   DELETE /api/rides/:id
+// @access  Private
+const cancelRide = async (req, res, next) => {
+  try {
+    const ride = await Ride.findById(req.params.id);
+
+    if (!ride) {
+      return res.status(404).json({
+        success: false,
+        message: 'Ride not found'
+      });
+    }
+
+    // Check if user owns the ride
+    if (ride.userId.toString() !== req.user.id) {
+      return res.status(403).json({
+        success: false,
+        message: 'Access denied'
+      });
+    }
+
+    // Check if ride can be cancelled
+    if (['completed', 'cancelled'].includes(ride.status)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Cannot cancel this ride'
+      });
+    }
+
+    ride.status = 'cancelled';
+    ride.cancelledAt = new Date();
+    ride.cancellationReason = req.body.reason || 'Cancelled by user';
+
+    await ride.save();
+
+    res.status(200).json({
+      success: true,
+      message: 'Ride cancelled successfully',
+      data: {
+        ride
+      }
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = {
+  createRide,
+  getUserRides,
+  getRide,
+  updateRide,
+  cancelRide
+};

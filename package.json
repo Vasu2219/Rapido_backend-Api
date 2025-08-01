@@ -1,36 +1,49 @@
 {
-  "name": "backend-api",
+  "name": "rapido-corporate-backend",
   "version": "1.0.0",
-  "description": "Corporate Ride Scheduling Backend API",
+  "description": "Backend API for Rapido Corporate Ride Booking System",
   "main": "app.js",
   "scripts": {
     "start": "node app.js",
     "dev": "nodemon app.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test-server": "node test-server.js",
+    "docs": "open-cli http://localhost:5000/api-docs",
+    "db:setup": "echo \"Please see DATABASE_SETUP.md for database configuration\"",
+    "postinstall": "echo \"🚀 Rapido Corporate API installed successfully! Run 'npm run dev' to start.\""
   },
   "keywords": [
+    "rapido",
+    "corporate",
+    "ride-booking",
     "express",
     "mongodb",
     "jwt",
-    "corporate",
-    "ride-scheduling"
+    "rest-api"
   ],
-  "author": "Corporate Rides Team",
-  "license": "MIT",
+  "author": "Rapido Development Team",
+  "license": "ISC",
   "type": "commonjs",
   "dependencies": {
-    "bcryptjs": "^3.0.2",
+    "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
-    "dotenv": "^17.2.1",
-    "express": "^5.1.0",
-    "express-rate-limit": "^8.0.1",
-    "express-validator": "^7.2.1",
-    "helmet": "^8.1.0",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "express-rate-limit": "^6.10.0",
+    "express-validator": "^7.0.1",
+    "helmet": "^7.0.0",
     "jsonwebtoken": "^9.0.2",
-    "mongoose": "^8.17.0",
-    "morgan": "^1.10.1",
-    "nodemon": "^3.1.10",
+    "mongoose": "^7.5.0",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1"
+  },
+  "devDependencies": {
+    "jest": "^29.6.2",
+    "nodemon": "^3.0.1",
+    "supertest": "^6.3.3"
+  },
+  "engines": {
+    "node": ">=14.0.0"
   }
 }
