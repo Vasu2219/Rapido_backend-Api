@@ -1,8 +1,4 @@
 const Ride = require('../models/Ride');
-
-// @desc    Create a new ride request
-// @route   POST /api/rides
-// @access  Private
 const createRide = async (req, res, next) => {
   try {
     req.body.userId = req.user.id;
@@ -14,18 +10,16 @@ const createRide = async (req, res, next) => {
 
     res.status(201).json({
       success: true,
+      message: 'Ride created successfully',
       data: {
         ride
       }
     });
   } catch (error) {
+    console.error('Create ride error:', error.message);
     next(error);
   }
 };
-
-// @desc    Get all rides for logged in user
-// @route   GET /api/rides
-// @access  Private
 const getUserRides = async (req, res, next) => {
   try {
     const { status, startDate, endDate } = req.query;
@@ -50,18 +44,17 @@ const getUserRides = async (req, res, next) => {
     res.status(200).json({
       success: true,
       count: rides.length,
+      message: 'Rides retrieved successfully',
       data: {
         rides
       }
     });
   } catch (error) {
+    console.error('Get rides error:', error.message);
     next(error);
   }
 };
 
-// @desc    Get single ride
-// @route   GET /api/rides/:id
-// @access  Private
 const getRide = async (req, res, next) => {
   try {
     const ride = await Ride.findById(req.params.id)
@@ -95,9 +88,6 @@ const getRide = async (req, res, next) => {
   }
 };
 
-// @desc    Update ride
-// @route   PUT /api/rides/:id
-// @access  Private
 const updateRide = async (req, res, next) => {
   try {
     let ride = await Ride.findById(req.params.id);
@@ -147,10 +137,6 @@ const updateRide = async (req, res, next) => {
     next(error);
   }
 };
-
-// @desc    Cancel ride
-// @route   DELETE /api/rides/:id
-// @access  Private
 const cancelRide = async (req, res, next) => {
   try {
     const ride = await Ride.findById(req.params.id);
@@ -161,7 +147,6 @@ const cancelRide = async (req, res, next) => {
         message: 'Ride not found'
       });
     }
-
     // Check if user owns the ride
     if (ride.userId.toString() !== req.user.id) {
       return res.status(403).json({
@@ -169,7 +154,6 @@ const cancelRide = async (req, res, next) => {
         message: 'Access denied'
       });
     }
-
     // Check if ride can be cancelled
     if (['completed', 'cancelled'].includes(ride.status)) {
       return res.status(400).json({

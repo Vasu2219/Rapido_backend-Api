@@ -7,11 +7,20 @@ const {
   cancelRide
 } = require('../controllers/rideController');
 const { protect } = require('../middleware/auth');
+const { 
+  validateRideCreation, 
+  validateRideUpdate, 
+  validateQueryParams,
+  validateIdParam
+} = require('../middleware/validation');
 
 const router = express.Router();
 
 // All ride routes require authentication
 router.use(protect);
+
+// Apply query validation to all routes
+router.use(validateQueryParams);
 
 /**
  * @swagger
@@ -124,7 +133,7 @@ router.use(protect);
 router
   .route('/')
   .get(getUserRides)
-  .post(createRide);
+  .post(validateRideCreation, createRide);
 
 /**
  * @swagger
@@ -296,8 +305,8 @@ router
  */
 router
   .route('/:id')
-  .get(getRide)
-  .put(updateRide)
-  .delete(cancelRide);
+  .get(validateIdParam, getRide)
+  .put(validateIdParam, validateRideUpdate, updateRide)
+  .delete(validateIdParam, cancelRide);
 
 module.exports = router;

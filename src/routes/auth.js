@@ -3,9 +3,20 @@ const {
   register, 
   login, 
   getMe, 
-  updateProfile 
+  updateProfile,
+  changePassword,
+  logout,
+  forgotPassword,
+  resetPassword,
+  refreshToken
 } = require('../controllers/authController');
 const { protect } = require('../middleware/auth');
+const { 
+  validateUserRegistration, 
+  validateUserLogin, 
+  validateProfileUpdate,
+  validatePasswordChange
+} = require('../middleware/validation');
 
 const router = express.Router();
 
@@ -17,6 +28,9 @@ router.post('/test', (req, res) => {
     timestamp: new Date().toISOString()
   });
 });
+
+// Login route
+router.post('/login', validateUserLogin, login);
 
 /**
  * @swagger
@@ -91,7 +105,7 @@ router.post('/test', (req, res) => {
  *       429:
  *         $ref: '#/components/responses/RateLimitError'
  */
-router.post('/register', register);
+router.post('/register', validateUserRegistration, register);
 
 /**
  * @swagger
@@ -150,14 +164,7 @@ router.post('/register', register);
  *       429:
  *         $ref: '#/components/responses/RateLimitError'
  */
-router.post('/login', (req, res) => {
-  console.log('🔥 DIRECT LOGIN ROUTE CALLED');
-  res.json({
-    success: true,
-    message: 'DIRECT LOGIN ROUTE WORKING',
-    timestamp: new Date().toISOString()
-  });
-});
+// router.post('/login', login); // Removed duplicate
 
 /**
  * @swagger
@@ -254,6 +261,175 @@ router.get('/me', protect, getMe);
  *       401:
  *         $ref: '#/components/responses/UnauthorizedError'
  */
-router.put('/profile', protect, updateProfile);
+router.put('/profile', protect, validateProfileUpdate, updateProfile);
+
+/**
+ * @swagger
+ * /api/auth/change-password:
+ *   put:
+ *     tags: [Authentication]
+ *     summary: Change user password
+ *     description: Change the password of the authenticated user
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [currentPassword, newPassword, confirmPassword]
+ *             properties:
+ *               currentPassword:
+ *                 type: string
+ *                 example: "OldPass123!"
+ *               newPassword:
+ *                 type: string
+ *                 example: "NewPass123!"
+ *               confirmPassword:
+ *                 type: string
+ *                 example: "NewPass123!"
+ *     responses:
+ *       200:
+ *         description: Password changed successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ApiResponse'
+ *       400:
+ *         $ref: '#/components/responses/ValidationError'
+ *       401:
+ *         $ref: '#/components/responses/UnauthorizedError'
+ */
+router.put('/change-password', protect, validatePasswordChange, changePassword);
+
+/**
+ * @swagger
+ * /api/auth/logout:
+ *   post:
+ *     tags: [Authentication]
+ *     summary: Logout user
+ *     description: Logout the authenticated user and invalidate the session
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Logged out successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ApiResponse'
+ *       401:
+ *         $ref: '#/components/responses/UnauthorizedError'
+ */
+router.post('/logout', protect, logout);
+
+/**
+ * @swagger
+ * /api/auth/forgot-password:
+ *   post:
+ *     tags: [Authentication]
+ *     summary: Forgot password
+ *     description: Send password reset token to user's email
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [email]
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 example: "john.doe@company.com"
+ *     responses:
+ *       200:
+ *         description: Password reset token sent
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ApiResponse'
+ *       404:
+ *         $ref: '#/components/responses/NotFoundError'
+ */
+router.post('/forgot-password', forgotPassword);
+
+/**
+ * @swagger
+ * /api/auth/reset-password/{resetToken}:
+ *   put:
+ *     tags: [Authentication]
+ *     summary: Reset password
+ *     description: Reset password using the reset token
+ *     parameters:
+ *       - in: path
+ *         name: resetToken
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Password reset token
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [password]
+ *             properties:
+ *               password:
+ *                 type: string
+ *                 example: "NewPass123!"
+ *     responses:
+ *       200:
+ *         description: Password reset successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ApiResponse'
+ *       400:
+ *         $ref: '#/components/responses/ValidationError'
+ */
+router.put('/reset-password/:resetToken', resetPassword);
+
+/**
+ * @swagger
+ * /api/auth/refresh:
+ *   post:
+ *     tags: [Authentication]
+ *     summary: Refresh access token
+ *     description: Get a new access token using refresh token
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [refreshToken]
+ *             properties:
+ *               refreshToken:
+ *                 type: string
+ *                 example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+ *     responses:
+ *       200:
+ *         description: New access token generated
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/ApiResponse'
+ *                 - type: object
+ *                   properties:
+ *                     data:
+ *                       type: object
+ *                       properties:
+ *                         token:
+ *                           type: string
+ *                         user:
+ *                           $ref: '#/components/schemas/User'
+ *       401:
+ *         $ref: '#/components/responses/UnauthorizedError'
+ */
+router.post('/refresh', refreshToken);
 
 module.exports = router;

@@ -25,9 +25,20 @@ connectDB();
 
 // Enable CORS for frontend
 const corsOptions = {
-  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+  origin: [
+    'http://localhost:3000',  // React frontend
+    'http://localhost:3001',  // Alternative React port
+    'http://localhost:5173',  // Vite dev server
+    'http://127.0.0.1:5173',  // Vite dev server alternative
+    'http://localhost:8080',  // Flutter web default port
+    'http://127.0.0.1:8080',  // Flutter web alternative
+    /^http:\/\/localhost:\d+$/, // Any localhost port
+    /^http:\/\/127\.0\.0\.1:\d+$/ // Any 127.0.0.1 port
+  ],
   credentials: true,
-  optionsSuccessStatus: 200
+  optionsSuccessStatus: 200,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
 };
 app.use(cors(corsOptions));
 

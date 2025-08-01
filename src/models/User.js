@@ -48,12 +48,24 @@ const userSchema = new mongoose.Schema({
   isActive: {
     type: Boolean,
     default: true
-  }
+  },
+  resetPasswordToken: String,
+  resetPasswordExpire: Date,
+  lastLoginAt: Date,
+  loginAttempts: {
+    type: Number,
+    default: 0
+  },
+  lockUntil: Date
 }, {
   timestamps: true,
   toJSON: {
     transform: function(doc, ret) {
       delete ret.password;
+      delete ret.resetPasswordToken;
+      delete ret.resetPasswordExpire;
+      delete ret.loginAttempts;
+      delete ret.lockUntil;
       return ret;
     }
   }

@@ -1,63 +1,68 @@
-const swaggerUIAssets = require('swagger-ui-dist/absolute-path');
-
-// Custom CSS for professional styling
 const customCSS = `
-  .swagger-ui .topbar { 
-    display: none; 
+  .swagger-ui .topbar {
+    background-color: #1a1a1a;
   }
-  .swagger-ui .info {
-    margin: 20px 0;
+  
+  .swagger-ui .topbar .download-url-wrapper .select-label {
+    color: #ffffff;
   }
+  
   .swagger-ui .info .title {
-    color: #2c3e50;
-    font-size: 2.5em;
-    font-weight: bold;
+    color: #333333;
   }
-  .swagger-ui .info .description {
-    font-size: 1.1em;
-    line-height: 1.6;
-    color: #34495e;
-  }
+  
   .swagger-ui .scheme-container {
-    background: #f8f9fa;
-    padding: 15px;
-    border-radius: 5px;
-    margin-bottom: 20px;
+    background-color: #f8f9fa;
+    border: 1px solid #e9ecef;
   }
-  .swagger-ui .opblock.opblock-post {
-    border-color: #27ae60;
-    background: rgba(39, 174, 96, 0.1);
-  }
+  
   .swagger-ui .opblock.opblock-get {
-    border-color: #3498db;
-    background: rgba(52, 152, 219, 0.1);
+    border-color: #61affe;
+    background: rgba(97, 175, 254, 0.1);
   }
+  
+  .swagger-ui .opblock.opblock-post {
+    border-color: #49cc90;
+    background: rgba(73, 204, 144, 0.1);
+  }
+  
   .swagger-ui .opblock.opblock-put {
-    border-color: #f39c12;
-    background: rgba(243, 156, 18, 0.1);
+    border-color: #fca130;
+    background: rgba(252, 161, 48, 0.1);
   }
+  
   .swagger-ui .opblock.opblock-delete {
-    border-color: #e74c3c;
-    background: rgba(231, 76, 60, 0.1);
+    border-color: #f93e3e;
+    background: rgba(249, 62, 62, 0.1);
   }
-  .swagger-ui .response-col_status {
-    font-weight: bold;
+  
+  .swagger-ui .btn.execute {
+    background-color: #4990e2;
+    border-color: #4990e2;
   }
-  .swagger-ui .parameter__name {
-    font-weight: bold;
-    color: #2c3e50;
+  
+  .swagger-ui .btn.execute:hover {
+    background-color: #357abd;
+    border-color: #357abd;
   }
-  .swagger-ui .btn.authorize {
-    background-color: #27ae60;
-    border-color: #27ae60;
+  
+  .swagger-ui .auth-wrapper {
+    background-color: #f8f9fa;
+    border: 1px solid #e9ecef;
   }
-  .swagger-ui .btn.authorize:hover {
-    background-color: #229954;
-    border-color: #229954;
+  
+  .swagger-ui .auth-container {
+    background-color: #ffffff;
+  }
+  
+  .swagger-ui .model {
+    background-color: #f8f9fa;
+  }
+  
+  .swagger-ui .model-box {
+    background-color: #ffffff;
+    border: 1px solid #e9ecef;
   }
 `;
 
-module.exports = {
-  customCSS,
-  swaggerUIAssets
-};
+module.exports = { customCSS }; 
