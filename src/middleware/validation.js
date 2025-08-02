@@ -137,35 +137,15 @@ const validatePasswordChange = [
 
 // Ride creation validation
 const validateRideCreation = [
-  body('pickup.address')
+  body('pickup')
     .trim()
     .isLength({ min: 5, max: 200 })
-    .withMessage('Pickup address must be between 5 and 200 characters'),
+    .withMessage('Pickup location must be between 5 and 200 characters'),
   
-  body('pickup.latitude')
-    .optional()
-    .isFloat({ min: -90, max: 90 })
-    .withMessage('Pickup latitude must be a valid coordinate'),
-  
-  body('pickup.longitude')
-    .optional()
-    .isFloat({ min: -180, max: 180 })
-    .withMessage('Pickup longitude must be a valid coordinate'),
-  
-  body('drop.address')
+  body('drop')
     .trim()
     .isLength({ min: 5, max: 200 })
-    .withMessage('Drop address must be between 5 and 200 characters'),
-  
-  body('drop.latitude')
-    .optional()
-    .isFloat({ min: -90, max: 90 })
-    .withMessage('Drop latitude must be a valid coordinate'),
-  
-  body('drop.longitude')
-    .optional()
-    .isFloat({ min: -180, max: 180 })
-    .withMessage('Drop longitude must be a valid coordinate'),
+    .withMessage('Drop location must be between 5 and 200 characters'),
   
   body('scheduleTime')
     .isISO8601()

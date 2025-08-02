@@ -1,4 +1,6 @@
 const Ride = require('../models/Ride');
+const { notifyAdminNewRide } = require('./notificationController');
+
 const createRide = async (req, res, next) => {
   try {
     req.body.userId = req.user.id;
@@ -7,6 +9,9 @@ const createRide = async (req, res, next) => {
     req.body.estimatedFare = Math.floor(Math.random() * 300) + 100; // Random fare between 100-400
 
     const ride = await Ride.create(req.body);
+
+    // Send notification to admin about new ride request
+    await notifyAdminNewRide(ride._id);
 
     res.status(201).json({
       success: true,

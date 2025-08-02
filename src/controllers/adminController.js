@@ -1,6 +1,7 @@
 const Ride = require('../models/Ride');
 const User = require('../models/User');
 const AdminAction = require('../models/AdminAction');
+const { notifyUserRideUpdate } = require('./notificationController');
 
 // @desc    Get all rides for admin
 // @route   GET /api/admin/rides
@@ -91,11 +92,14 @@ const approveRide = async (req, res, next) => {
 
     await ride.save();
 
+    // Send notification to user about ride approval
+    await notifyUserRideUpdate(ride._id, 'approved', req.user.id);
+
     // Log admin action
     await AdminAction.create({
       adminId: req.user.id,
       action: 'approve_ride',
-      targetType: 'Ride',
+      targetType: 'ride',
       targetId: ride._id,
       details: {
         rideId: ride._id,
@@ -145,11 +149,14 @@ const rejectRide = async (req, res, next) => {
 
     await ride.save();
 
+    // Send notification to user about ride rejection
+    await notifyUserRideUpdate(ride._id, 'rejected', req.user.id);
+
     // Log admin action
     await AdminAction.create({
       adminId: req.user.id,
       action: 'reject_ride',
-      targetType: 'Ride',
+      targetType: 'ride',
       targetId: ride._id,
       details: {
         rideId: ride._id,
@@ -194,6 +201,9 @@ const getRideAnalytics = async (req, res, next) => {
     const rejectedRides = await Ride.countDocuments({ ...matchQuery, status: 'rejected' });
     const completedRides = await Ride.countDocuments({ ...matchQuery, status: 'completed' });
     const cancelledRides = await Ride.countDocuments({ ...matchQuery, status: 'cancelled' });
+
+    // Get total users count
+    const totalUsers = await User.countDocuments({ role: { $ne: 'admin' } });
 
     // Department wise analytics
     const departmentAnalytics = await Ride.aggregate([
@@ -259,6 +269,7 @@ const getRideAnalytics = async (req, res, next) => {
           rejectedRides,
           completedRides,
           cancelledRides,
+          totalUsers,
           approvalRate: totalRides > 0 ? ((approvedRides / totalRides) * 100).toFixed(2) : 0
         },
         departmentAnalytics,

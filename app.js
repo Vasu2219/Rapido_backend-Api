@@ -17,6 +17,7 @@ const auth = require('./src/routes/auth');
 const users = require('./src/routes/users');
 const rides = require('./src/routes/rides');
 const admin = require('./src/routes/admin');
+const notifications = require('./src/routes/notifications');
 
 const app = express();
 
@@ -130,6 +131,7 @@ app.use('/api/auth', auth);
 app.use('/api/users', users);
 app.use('/api/rides', rides);
 app.use('/api/admin', admin);
+app.use('/api/notifications', notifications);
 
 // 404 handler
 app.use('*', (req, res) => {

@@ -5,13 +5,57 @@ const User = require('../models/User');
 // @access  Private/Admin
 const getUsers = async (req, res, next) => {
   try {
-    const users = await User.find({ isActive: true })
+    const { department, role, isActive, search, page = 1, limit = 10 } = req.query;
+    
+    // Build query
+    const query = {};
+    
+    // Always exclude admin users from the list
+    query.role = { $ne: 'admin' };
+    
+    if (department) {
+      query.department = department;
+    }
+    
+    if (role && role !== 'admin') {
+      query.role = role;
+    }
+    
+    if (isActive !== undefined && isActive !== '') {
+      query.isActive = isActive === 'true';
+    } else {
+      // Default to active users if not specified
+      query.isActive = true;
+    }
+    
+    if (search) {
+      query.$or = [
+        { firstName: { $regex: search, $options: 'i' } },
+        { lastName: { $regex: search, $options: 'i' } },
+        { email: { $regex: search, $options: 'i' } },
+        { employeeId: { $regex: search, $options: 'i' } }
+      ];
+    }
+
+    const startIndex = (parseInt(page, 10) - 1) * parseInt(limit, 10);
+    
+    const users = await User.find(query)
       .select('-password')
-      .sort({ createdAt: -1 });
+      .sort({ createdAt: -1 })
+      .limit(parseInt(limit, 10))
+      .skip(startIndex);
+
+    const total = await User.countDocuments(query);
 
     res.status(200).json({
       success: true,
       count: users.length,
+      total,
+      pagination: {
+        page: parseInt(page, 10),
+        limit: parseInt(limit, 10),
+        totalPages: Math.ceil(total / parseInt(limit, 10))
+      },
       data: {
         users
       }
