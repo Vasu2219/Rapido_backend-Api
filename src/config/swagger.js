@@ -18,12 +18,12 @@ const options = {
     },
     servers: [
       {
-        url: 'http://localhost:5000',
-        description: 'Development server'
+        url: 'https://rapido-backend-api.onrender.com',
+        description: 'Production server (Render)'
       },
       {
-        url: 'https://api.rapido-corporate.com',
-        description: 'Production server'
+        url: 'http://localhost:5000',
+        description: 'Development server'
       }
     ],
     components: {
