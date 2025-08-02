@@ -25,16 +25,24 @@ const app = express();
 connectDB();
 
 // Enable CORS for frontend
+const allowedOrigins = process.env.CORS_ORIGIN 
+  ? process.env.CORS_ORIGIN.split(',') 
+  : [
+      'http://localhost:3000',  // React frontend
+      'http://localhost:3001',  // Alternative React port
+      'http://localhost:5173',  // Vite dev server
+      'http://127.0.0.1:5173',  // Vite dev server alternative
+      'http://localhost:8080',  // Flutter web default port
+      'http://127.0.0.1:8080'   // Flutter web alternative
+    ];
+
 const corsOptions = {
   origin: [
-    'http://localhost:3000',  // React frontend
-    'http://localhost:3001',  // Alternative React port
-    'http://localhost:5173',  // Vite dev server
-    'http://127.0.0.1:5173',  // Vite dev server alternative
-    'http://localhost:8080',  // Flutter web default port
-    'http://127.0.0.1:8080',  // Flutter web alternative
+    ...allowedOrigins,
     /^http:\/\/localhost:\d+$/, // Any localhost port
-    /^http:\/\/127\.0\.0\.1:\d+$/ // Any 127.0.0.1 port
+    /^http:\/\/127\.0\.0\.1:\d+$/, // Any 127.0.0.1 port
+    /^https:\/\/.*\.vercel\.app$/, // Any Vercel deployment
+    /^https:\/\/.*\.onrender\.com$/ // Any Render deployment
   ],
   credentials: true,
   optionsSuccessStatus: 200,
