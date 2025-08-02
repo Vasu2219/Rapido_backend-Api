@@ -11,7 +11,9 @@
     "test-server": "node test-server.js",
     "docs": "open-cli http://localhost:5000/api-docs",
     "db:setup": "echo \"Please see DATABASE_SETUP.md for database configuration\"",
-    "postinstall": "echo \"🚀 Rapido Corporate API installed successfully! Run 'npm run dev' to start.\""
+    "postinstall": "echo \"🚀 Rapido Corporate API installed successfully! Run 'npm run dev' to start.\"",
+    "build": "echo \"No build step required for Node.js\"",
+    "prod": "NODE_ENV=production node app.js"
   },
   "keywords": [
     "rapido",
@@ -47,6 +49,7 @@
     "supertest": "^6.3.3"
   },
   "engines": {
-    "node": ">=14.0.0"
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
   }
 }
