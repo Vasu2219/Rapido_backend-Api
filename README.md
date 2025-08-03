@@ -9,7 +9,6 @@ A comprehensive, production-ready backend API for the Rapido Corporate Ride Book
 - **Role-based Access Control** (User/Admin)
 - **Ride Booking & Management** with approval workflow
 - **Admin Dashboard** for ride approval and user management
-- **Password Reset** functionality
 - **Profile Management** for users
 
 ### Technical Features
@@ -236,47 +235,6 @@ npm run test:coverage
 }
 ```
 
-### Ride Model
-```javascript
-{
-  userId: ObjectId (ref: 'User'),
-  pickup: {
-    address: String (required),
-    latitude: Number,
-    longitude: Number,
-    landmark: String
-  },
-  drop: {
-    address: String (required),
-    latitude: Number,
-    longitude: Number,
-    landmark: String
-  },
-  scheduleTime: Date (required),
-  status: String (enum),
-  estimatedFare: Number,
-  actualFare: Number,
-  purpose: String,
-  specialRequirements: String,
-  driver: {
-    name: String,
-    phone: String,
-    vehicle: String,
-    rating: Number
-  },
-  approvedBy: ObjectId (ref: 'User'),
-  approvedAt: Date,
-  rejectedBy: ObjectId (ref: 'User'),
-  rejectedAt: Date,
-  rejectionReason: String,
-  cancelledAt: Date,
-  cancellationReason: String,
-  feedback: {
-    rating: Number,
-    comment: String
-  }
-}
-```
 
 ## 🚀 Deployment
 
@@ -312,26 +270,7 @@ CMD ["npm", "start"]
 - Error logging with stack traces
 - Database connection logging
 
-## 🤝 Contributing
 
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests for new features
-5. Ensure all tests pass
-6. Submit a pull request
-
-## 📝 License
-
-This project is licensed under the ISC License.
-
-## 🆘 Support
-
-For support and questions:
-- Check the API documentation at `/api-docs`
-- Review the health check at `/health`
-- Check the logs for error details
-- Contact the development team
 
 ## 🔄 Changelog
 
