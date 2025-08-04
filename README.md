@@ -1,6 +1,6 @@
 # Rapido Corporate Backend API - Optimized
 
-A comprehensive, production-ready backend API for the Rapido Corporate Ride Booking System with full Swagger documentation, validation, security, and optimized code structure.
+A comprehensive backend API for the Rapido Corporate Ride Booking System with full Swagger documentation, validation, security, and optimized code structure.
 
 ## 🚀 Features
 
